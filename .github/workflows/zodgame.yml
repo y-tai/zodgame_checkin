@@ -1,0 +1,26 @@
+name: zodgame
+
+on:
+  schedule:
+  - cron: "0 0 * * *"
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install requirements
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r ./zodgame/requirements.txt
+    - name: Install selenium 
+      run: |
+        wget https://cdn.npm.taobao.org/dist/chromedriver/92.0.4515.107/chromedriver_linux64.zip
+        unzip chromedriver_linux64.zip
+        sudo cp -p ./chromedriver /usr/bin/
+    - name: Run 
+      run: |
+        python3 ./zodgame/zodgame.py "${{secrets.ZODGAME_COOKIE}}"
