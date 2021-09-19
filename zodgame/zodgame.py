@@ -63,3 +63,5 @@ if __name__ == "__main__":
         zodgame(cookie_string)
     else:
         print("未配置Cookie")
+        assert False, "Please set the cookie."
+        
