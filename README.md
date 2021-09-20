@@ -4,11 +4,12 @@ Zodgame automatic check-in using github action
 
 ### 1. 添加 Cookie 至 Secrets
 
-- 首先通过F12抓取到Cookie，随后在项目页面，依次点击`Settings`-->`Secrets`-->`New secret`
+- 首先通过F12抓取到在浏览器中抓取`Cookie`.
 <p align="center">
   <img src="imgs/Step1.png" />
 </p>
 
+- 在项目页面，依次点击`Settings`-->`Secrets`-->`New secret`
 - 建立名为`ZODGAME_COOKIE`的 secret，值为复制的`Cookie`内容，最后点击`Add secret`
 - secret名字必须为`ZODGAME_COOKIE`！
 <p align="center">
