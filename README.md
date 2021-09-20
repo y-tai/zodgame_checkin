@@ -8,6 +8,7 @@ Zodgame automatic check-in using github action
 <p align="center">
   <img src="imgs/Step1.png" />
 </p>
+
 - 建立名为`ZODGAME_COOKIE`的 secret，值为复制的`Cookie`内容，最后点击`Add secret`
 - secret名字必须为`ZODGAME_COOKIE`！
 <p align="center">
@@ -16,6 +17,7 @@ Zodgame automatic check-in using github action
 <p align="center">
   <img src="imgs/Step3.png" />
 </p>
+
 ### 2. 启用 Actions
 
 - 本仓库 Actions 默认为关闭状态，需要通过 `Settings`-->`Actions`-->`Allow all actions`开启。（如果已经开启则忽略此项）
