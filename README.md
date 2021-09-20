@@ -13,5 +13,6 @@ Zodgame automatic check-in using github action
 
 - 本仓库 Actions 默认为关闭状态，需要通过 `Settings`-->`Actions`-->`Allow all actions`开启。
 - Fork 之后需要手动执行一次，若成功运行其才会激活。
-返回项目主页面，点击上方的`Actions`，再点击左侧的`Genshin Impact Helper`，再点击`Run workflow`
+返回项目主页面，点击上方的`Actions`，再点击左侧的`Zod Game`，再点击`Run workflow`
 至此，部署完毕。
+- 本项目由WorkFlow控制，每日8时自动执行。
