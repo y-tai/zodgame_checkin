@@ -1,8 +1,6 @@
 # zodgame_checkin
 Zodgame automatic check-in using github action
 
-【9.22 zodgame更新了反爬机制，该脚本暂不可用。将于近期更新。】
-
 ### 1. 添加 Cookie 至 Secrets
 
 - 首先通过F12抓取到在浏览器中抓取`Cookie`.
