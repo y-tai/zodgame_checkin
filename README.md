@@ -1,6 +1,13 @@
 # zodgame_checkin
 Zodgame automatic check-in using github action
 
+### 日志
+
+- 2021.9.22 ZodGame更新反爬机制，本项目暂不可用。
+
+- 2021.9.26 ZodGame回退反爬机制，本项目 **`目前可用`**。
+
+## 使用方法
 ### 1. 添加 Cookie 至 Secrets
 
 - 首先通过F12抓取到在浏览器中抓取`Cookie`.
@@ -20,6 +27,5 @@ Zodgame automatic check-in using github action
 
 ### 2. 启用 Actions
 
-- 本仓库 Actions 默认为关闭状态，需要通过 `Settings`-->`Actions`-->`Allow all actions`开启。（如果已经开启则忽略此项）
 - 本项目由Workflow控制，每日8时自动执行。
 - 本项目目前可以正常运行，如果有其他使用问题请在Issues留言。
