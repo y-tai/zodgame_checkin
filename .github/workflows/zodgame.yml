@@ -3,6 +3,11 @@ name: zodgame
 on:
   schedule:
   - cron: "0 0 * * *"
+  
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 jobs:
   build:
     runs-on: ubuntu-20.04
