@@ -24,9 +24,9 @@ jobs:
     - name: Install selenium 
       run: |
         wget http://security.ubuntu.com/ubuntu/pool/universe/c/chromium-browser/chromium-browser_93.0.4577.63-0ubuntu0.18.04.1_amd64.deb
-        sudo dpkg -i --fix-missing chromium-browser_93.0.4577.63-0ubuntu0.18.04.1_amd64.deb 
+        sudo dpkg -i chromium-browser_93.0.4577.63-0ubuntu0.18.04.1_amd64.deb 
         wget http://security.ubuntu.com/ubuntu/pool/universe/c/chromium-browser/chromium-chromedriver_93.0.4577.63-0ubuntu0.18.04.1_amd64.deb
-        sudo dpkg -i --fix-missing chromium-chromedriver_93.0.4577.63-0ubuntu0.18.04.1_amd64.deb 
+        sudo dpkg -i chromium-chromedriver_93.0.4577.63-0ubuntu0.18.04.1_amd64.deb 
         apt-get -fy install
     - name: Run 
       run: |
