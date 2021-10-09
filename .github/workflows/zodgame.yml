@@ -23,14 +23,15 @@ jobs:
         pip install -r ./zodgame/requirements.txt
     - name: Install selenium 
       run: |
-        wget http://security.ubuntu.com/ubuntu/pool/universe/c/chromium-browser/chromium-codecs-ffmpeg_93.0.4577.63-0ubuntu0.18.04.1_amd64.deb
-        sudo dpkg -i chromium-codecs-ffmpeg_93.0.4577.63-0ubuntu0.18.04.1_amd64.deb
-        wget http://security.ubuntu.com/ubuntu/pool/universe/c/chromium-browser/chromium-codecs-ffmpeg-extra_93.0.4577.63-0ubuntu0.18.04.1_amd64.deb
-        sudo dpkg -i chromium-codecs-ffmpeg-extra_93.0.4577.63-0ubuntu0.18.04.1_amd64.deb
-        wget http://security.ubuntu.com/ubuntu/pool/universe/c/chromium-browser/chromium-browser_93.0.4577.63-0ubuntu0.18.04.1_amd64.deb
-        sudo dpkg -i chromium-browser_93.0.4577.63-0ubuntu0.18.04.1_amd64.deb 
-        wget http://security.ubuntu.com/ubuntu/pool/universe/c/chromium-browser/chromium-chromedriver_93.0.4577.63-0ubuntu0.18.04.1_amd64.deb
-        sudo dpkg -i chromium-chromedriver_93.0.4577.63-0ubuntu0.18.04.1_amd64.deb 
+        wget http://security.ubuntu.com/ubuntu/pool/universe/c/chromium-browser/chromium-codecs-ffmpeg_85.0.4183.83-0ubuntu0.20.04.2_amd64.deb
+        sudo dpkg -i chromium-codecs-ffmpeg_85.0.4183.83-0ubuntu0.20.04.2_amd64.deb
+        wget http://security.ubuntu.com/ubuntu/pool/universe/c/chromium-browser/chromium-codecs-ffmpeg-extra_85.0.4183.83-0ubuntu0.20.04.2_amd64.deb
+        sudo dpkg -i chromium-codecs-ffmpeg-extra_85.0.4183.83-0ubuntu0.20.04.2_amd64.deb
+        wget http://security.ubuntu.com/ubuntu/pool/universe/c/chromium-browser/chromium-browser_85.0.4183.83-0ubuntu0.20.04.2_amd64.deb
+        sudo dpkg -i chromium-browser_85.0.4183.83-0ubuntu0.20.04.2_amd64.deb
+        wget http://security.ubuntu.com/ubuntu/pool/universe/c/chromium-browser/chromium-chromedriver_85.0.4183.83-0ubuntu0.20.04.2_amd64.deb
+        sudo dpkg -i chromium-chromedriver_85.0.4183.83-0ubuntu0.20.04.2_amd64.deb
+
     - name: Run 
       run: |
         python3 ./zodgame/zodgame.py "${{secrets.ZODGAME_COOKIE}}"
