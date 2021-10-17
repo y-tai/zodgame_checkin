@@ -1,7 +1,7 @@
 import re
 import sys
 from selenium import webdriver
-
+from selenium.webdriver.common.by import By
 
 def zodgame(cookie_string):
     options = webdriver.ChromeOptions()
@@ -23,12 +23,12 @@ def zodgame(cookie_string):
         })
     driver.get(url)
     try:
-        driver.find_element_by_xpath('//div[@class="bm_h cl"]')
+        driver.find_element(By.XPATH, '//div[@class="bm_h cl"]')
     except:
         print("Login failed, Please check the cookie.")
         assert False, "Login failed, Please check the cookie."
 
-    formhash = driver.find_element_by_xpath('//input[@name="formhash"]').get_attribute('value')    
+    formhash = driver.find_element(By.XPATH, '//input[@name="formhash"]').get_attribute('value')
     url2 = "https://zodgame.xyz/plugin.php?id=dsu_paulsign:sign&operation=qiandao&infloat=1&inajax=0"    
     ajax_query = """
         (function (){
