@@ -6,7 +6,7 @@ Zodgame automatic check-in using github action
 - 2021.9.22 ZodGame更新反爬机制，本项目暂不可用。
 
 - 2021.9.26 ZodGame回退反爬机制，本项目 **`目前可用`**。
-- 
+
 - 2021.10.8 更新了Chrome Driver的下载方式。
 
 ## 使用方法
