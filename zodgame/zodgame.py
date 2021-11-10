@@ -11,7 +11,7 @@ def zodgame(cookie_string):
     driver = uc.Chrome(options=options)
 
     driver.execute_script('window.open("https://zodgame.xyz/plugin.php?id=dsu_paulsign:sign");')
-    time.sleep(120)
+    time.sleep(10)
 
     cookie_dict = [ 
         {"name" : x.split('=')[0].strip(), "value": x.split('=')[1].strip()} 
@@ -30,7 +30,7 @@ def zodgame(cookie_string):
         })
     driver.execute_script('window.open("https://zodgame.xyz/plugin.php?id=dsu_paulsign:sign");')
     driver.get(url)
-    time.sleep(120)
+    time.sleep(30)
     try:
         driver.find_element(uc.selenium.webdriver.common.by.By.XPATH, '//div[@class="bm_h cl"]')
     except:
