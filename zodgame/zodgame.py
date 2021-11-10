@@ -1,15 +1,22 @@
 import re
 import sys
-from selenium import webdriver
-from selenium.webdriver.common.by import By
+import time
+
+import undetected_chromedriver.v2 as uc
 
 def zodgame(cookie_string):
-    options = webdriver.ChromeOptions()
+    options = uc.ChromeOptions()
     options.add_argument('--headless')
     #options.add_argument("user-agent=Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Mobile Safari/537.36")
-    driver = webdriver.Chrome(options = options)
+    driver = uc.Chrome(options=options)
 
-    cookie_dict = [ {"name" : x.split('=')[0].strip(), "value": x.split('=')[1].strip()} for x in cookie_string.split(';')]
+    driver.execute_script('window.open("https://zodgame.xyz/plugin.php?id=dsu_paulsign:sign");')
+    time.sleep(120)
+
+    cookie_dict = [ 
+        {"name" : x.split('=')[0].strip(), "value": x.split('=')[1].strip()} 
+        for x in cookie_string.split(';')
+    ]
 
     url = "https://zodgame.xyz/plugin.php?id=dsu_paulsign:sign"
     driver.get(url)
@@ -21,14 +28,18 @@ def zodgame(cookie_string):
             "value": cookie["value"],
             "path": "/",
         })
+    driver.execute_script('window.open("https://zodgame.xyz/plugin.php?id=dsu_paulsign:sign");')
     driver.get(url)
+    time.sleep(120)
     try:
-        driver.find_element(By.XPATH, '//div[@class="bm_h cl"]')
+        driver.find_element(uc.selenium.webdriver.common.by.By.XPATH, '//div[@class="bm_h cl"]')
     except:
         print("Login failed, Please check the cookie.")
-        assert False, "Login failed, Please check the cookie."
+        #assert False, "Login failed, Please check the cookie."
 
-    formhash = driver.find_element(By.XPATH, '//input[@name="formhash"]').get_attribute('value')
+    #time.sleep(600)
+
+    formhash = driver.find_element(uc.selenium.webdriver.common.by.By.XPATH, '//input[@name="formhash"]').get_attribute('value')
     url2 = "https://zodgame.xyz/plugin.php?id=dsu_paulsign:sign&operation=qiandao&infloat=1&inajax=0"    
     ajax_query = """
         (function (){
@@ -64,4 +75,3 @@ if __name__ == "__main__":
     else:
         print("未配置Cookie")
         assert False, "Please set the cookie."
-        
