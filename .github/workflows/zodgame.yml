@@ -17,9 +17,10 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
+    - name: gabrielbb/xvfb-action
+    - uses: GabrielBB/xvfb-action@v1
     - name: Install requirements
       run: |
-        sudo apt-get install -y xvfb
         python -m pip install --upgrade pip
         pip install -r ./zodgame/requirements.txt
     - name: Run 
