@@ -8,6 +8,7 @@ import undetected_chromedriver.v2 as uc
 def zodgame(cookie_string):
     options = uc.ChromeOptions()
     options.add_argument("--disable-popup-blocking")
+    options.add_argument('--no-sandbox')
     driver = uc.Chrome(options=options)
 
     driver.execute_script('window.location.href="https://zodgame.xyz/";')
@@ -28,13 +29,13 @@ def zodgame(cookie_string):
 
     #driver.refresh()
     driver.execute_script('window.open("https://zodgame.xyz/");')
+    driver.switch_to.window(driver.window_handles[1])
     timesleep=0
     while driver.title == "Just a moment...":
         time.sleep(5)
         timesleep = timesleep + 5
         assert timesleep <= 240, "签到超时"
 
-    
     formhash = driver.find_element(uc.selenium.webdriver.common.by.By.XPATH, '//input[@name="formhash"]').get_attribute('value')
     checkin_url = "https://zodgame.xyz/plugin.php?id=dsu_paulsign:sign&operation=qiandao&infloat=1&inajax=0"    
     checkin_query = """
@@ -54,7 +55,7 @@ def zodgame(cookie_string):
     match = re.search('<div class="c">\n(.*?)</div>\n',resp["response"],re.S)
     message = match.group(1) if match is not None else "签到失败"
     print(message)
-    assert message not in ("您今日已经签到，请明天再来", "恭喜你签到成功!")        
+    assert "恭喜你签到成功!" in message or "您今日已经签到，请明天再来" in message
     driver.close()
     driver.quit()
     
