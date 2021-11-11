@@ -20,18 +20,17 @@ def zodgame(cookie_string):
 
     driver.delete_all_cookies()
     for cookie in cookie_dict:
-        driver.add_cookie({
-            "domain": "zodgame.xyz",
-            "name": cookie["name"],
-            "value": cookie["value"],
-            "path": "/",
-        })
+        if cookie["name"] != "qhMq_2132_lastact":
+            driver.add_cookie({
+                "domain": "zodgame.xyz",
+                "name": cookie["name"],
+                "value": cookie["value"],
+                "path": "/",
+            })
 
     #driver.refresh()
     driver.execute_script('window.open("https://zodgame.xyz/");')
     time.sleep(30)
-    #driver.switch_to.window(driver.window_handles[1])
-    #print(driver.title)
     
     formhash = driver.find_element(uc.selenium.webdriver.common.by.By.XPATH, '//input[@name="formhash"]').get_attribute('value')
     checkin_url = "https://zodgame.xyz/plugin.php?id=dsu_paulsign:sign&operation=qiandao&infloat=1&inajax=0"    
