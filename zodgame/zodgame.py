@@ -8,10 +8,8 @@ import undetected_chromedriver.v2 as uc
 def zodgame(cookie_string):
     options = uc.ChromeOptions()
     options.add_argument("--disable-popup-blocking")
-    #options.add_argument("user-agent=Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Mobile Safari/537.36")
     driver = uc.Chrome(options=options)
 
-    login_url = "https://zodgame.xyz/plugin.php?id=dsu_paulsign:sign"
     driver.execute_script('window.location.href="https://zodgame.xyz/";')
     cookie_dict = [ 
         {"name" : x.split('=')[0].strip(), "value": x.split('=')[1].strip()} 
@@ -30,7 +28,12 @@ def zodgame(cookie_string):
 
     #driver.refresh()
     driver.execute_script('window.open("https://zodgame.xyz/");')
-    time.sleep(30)
+    timesleep=0
+    while driver.title == "Just a moment...":
+        time.sleep(5)
+        timesleep = timesleep + 5
+        assert timesleep <= 240, "签到超时"
+
     
     formhash = driver.find_element(uc.selenium.webdriver.common.by.By.XPATH, '//input[@name="formhash"]').get_attribute('value')
     checkin_url = "https://zodgame.xyz/plugin.php?id=dsu_paulsign:sign&operation=qiandao&infloat=1&inajax=0"    
