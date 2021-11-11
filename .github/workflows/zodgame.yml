@@ -24,4 +24,4 @@ jobs:
         pip install -r ./zodgame/requirements.txt
     - name: Run 
       run: |
-        /usr/bin/xvfb-run -s ":44 -ac -screen 0 1920x1080x24 -nolisten tcp" python3 ./zodgame/zodgame.py "${{secrets.ZODGAME_COOKIE}}"
+        python3 ./zodgame/zodgame.py "${{secrets.ZODGAME_COOKIE}}"
