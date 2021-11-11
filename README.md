@@ -10,7 +10,8 @@ Zodgame automatic check-in using github action
 - 2021.10.8 更新了Chrome Driver的下载方式。
 
 - 2021.11.11 更换了自动签到的核心脚本。如果还是不能签到，请手动更新一遍Cookie（针对11月份之后）。
-【当前版本由于Xvfb和undetected_chromedriver的冲突，有一定概率会无法创建driver，从而签到失败，介意的朋友增加签到频率即可，或者手动re-run jobs】
+
+- 2021.11.12 修复了2011.11.11版本的一些bug。
 
 ## 使用方法
 ### 1. 添加 Cookie 至 Secrets
