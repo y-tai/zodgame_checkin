@@ -18,7 +18,7 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: gabrielbb/xvfb-action
-    - uses: GabrielBB/xvfb-action@v1
+      uses: GabrielBB/xvfb-action@v1
     - name: Install requirements
       run: |
         python -m pip install --upgrade pip
