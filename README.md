@@ -9,6 +9,8 @@ Zodgame automatic check-in using github action
 
 - 2021.10.8 更新了Chrome Driver的下载方式。
 
+- 2021.11.11 更换了自动签到的核心脚本。如果还是不能签到，请手动更新一遍Cookie（针对11月份之后）。
+
 ## 使用方法
 ### 1. 添加 Cookie 至 Secrets
 
