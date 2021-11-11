@@ -56,8 +56,6 @@ def zodgame(cookie_string):
     message = match.group(1) if match is not None else "签到失败"
     print(message)
     assert "恭喜你签到成功!" in message or "您今日已经签到，请明天再来" in message
-    driver.close()
-    driver.quit()
     
 if __name__ == "__main__":
 
