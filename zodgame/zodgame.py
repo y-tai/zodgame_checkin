@@ -2,11 +2,11 @@ import re
 import sys
 import time
 
-from xvfbwrapper import Xvfb
 import undetected_chromedriver.v2 as uc
 
 def zodgame(cookie_string):
     options = uc.ChromeOptions()
+    options.add_argument('--headless')
     options.add_argument("--disable-popup-blocking")
     options.add_argument('--no-sandbox')
     driver = uc.Chrome(options=options)
@@ -61,12 +61,9 @@ def zodgame(cookie_string):
     
 if __name__ == "__main__":
 
-    vdisplay = Xvfb(width=800, height=1280)
-    vdisplay.start()
     cookie_string = sys.argv[1]
     if cookie_string:
         zodgame(cookie_string)
     else:
         print("未配置Cookie")
         assert False, "Please set the cookie."
-    vdisplay.stop()
