@@ -8,6 +8,7 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+
 jobs:
   build:
     runs-on: ubuntu-20.04
@@ -23,6 +24,4 @@ jobs:
         pip install -r ./zodgame/requirements.txt
     - name: Run 
       run: |
-        sudo apt-get install -y xvfb
-        sudo /usr/bin/Xvfb 0 -screen 0 1280x800x24 &
-        python3 ./zodgame/zodgame.py "${{secrets.ZODGAME_COOKIE}}"
+        /usr/bin/xvfb-run -s ":44 -ac -screen 0 1920x1080x24 -nolisten tcp" python3 ./zodgame/zodgame.py "${{secrets.ZODGAME_COOKIE}}"
