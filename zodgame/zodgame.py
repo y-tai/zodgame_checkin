@@ -9,7 +9,7 @@ def zodgame(cookie_string):
     options.add_argument('--headless')
     options.add_argument("--disable-popup-blocking")
     options.add_argument('--no-sandbox')
-    driver = uc.Chrome(options=options)
+    driver = uc.Chrome(version_main=95, options=options)
 
     driver.execute_script('window.location.href="https://zodgame.xyz/";')
     cookie_dict = [ 
