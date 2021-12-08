@@ -1,3 +1,4 @@
+import os
 import re
 import sys
 import time
@@ -6,12 +7,13 @@ import undetected_chromedriver.v2 as uc
 
 def zodgame(cookie_string):
     options = uc.ChromeOptions()
-    options.add_argument('--headless')
     options.add_argument("--disable-popup-blocking")
-    options.add_argument('--no-sandbox')
-    driver = uc.Chrome(version_main=95, options=options)
+    options.add_argument("--no-sandbox")
+    driver = uc.Chrome(version_main=95, options = options)
 
     driver.execute_script('window.location.href="https://zodgame.xyz/";')
+    
+    cookie_string.replace("/","%2")
     cookie_dict = [ 
         {"name" : x.split('=')[0].strip(), "value": x.split('=')[1].strip()} 
         for x in cookie_string.split(';')
@@ -19,7 +21,7 @@ def zodgame(cookie_string):
 
     driver.delete_all_cookies()
     for cookie in cookie_dict:
-        if cookie["name"] != "qhMq_2132_lastact":
+        if cookie["name"] in ["qhMq_2132_saltkey", "qhMq_2132_auth"]:
             driver.add_cookie({
                 "domain": "zodgame.xyz",
                 "name": cookie["name"],
@@ -57,11 +59,14 @@ def zodgame(cookie_string):
     print(message)
     assert "恭喜你签到成功!" in message or "您今日已经签到，请明天再来" in message
     
+    driver.close()
+    driver.quit()
+    
 if __name__ == "__main__":
-
     cookie_string = sys.argv[1]
     if cookie_string:
         zodgame(cookie_string)
     else:
         print("未配置Cookie")
         assert False, "Please set the cookie."
+   
