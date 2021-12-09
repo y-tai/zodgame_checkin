@@ -1,7 +1,8 @@
-# encoding=utf8
+import io
 import re
 import sys
 import time
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8')
 
 import undetected_chromedriver.v2 as uc
 
