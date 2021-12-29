@@ -4,7 +4,7 @@ import sys
 import time
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8')
 
-import undetected_chromedriver.v2 as uc
+import undetected_chromedriver as uc
 
 def zodgame(cookie_string):
     options = uc.ChromeOptions()
@@ -12,8 +12,7 @@ def zodgame(cookie_string):
     #options.add_argument("--no-sandbox")
     driver = uc.Chrome(version_main=95, options = options)
 
-    driver.tab_new("https://zodgame.xyz/")
-    driver.switch_to.window(driver.window_handles[1])
+    driver.get("https://zodgame.xyz/")
 
     cookie_string.replace("/","%2")
     cookie_dict = [ 
@@ -31,10 +30,10 @@ def zodgame(cookie_string):
                 "path": "/",
             })
 
-    driver.switch_to.window(driver.window_handles[0])
     driver.get("https://zodgame.xyz/")
     time.sleep(5)
 
+    #driver.execute_script('window.location.href="https://zodgame.xyz/";')
     timesleep=0
     while driver.title == "Just a moment...":
         time.sleep(5)
@@ -67,9 +66,9 @@ def zodgame(cookie_string):
     
 if __name__ == "__main__":
     cookie_string = sys.argv[1]
+    
     if cookie_string:
         zodgame(cookie_string)
     else:
         print("未配置Cookie")
-        assert False, "Please set the cookie."
    
