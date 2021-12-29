@@ -38,7 +38,7 @@ def zodgame(cookie_string):
     while driver.title == "Just a moment...":
         time.sleep(5)
         timesleep = timesleep + 5
-        assert timesleep <= 240, "签到超时"
+        assert timesleep <= 240, "Time out."
 
     formhash = driver.find_element(uc.selenium.webdriver.common.by.By.XPATH, '//input[@name="formhash"]').get_attribute('value')
     checkin_url = "https://zodgame.xyz/plugin.php?id=dsu_paulsign:sign&operation=qiandao&infloat=1&inajax=0"    
