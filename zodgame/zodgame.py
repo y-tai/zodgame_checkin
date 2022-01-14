@@ -10,7 +10,7 @@ def zodgame(cookie_string):
     options = uc.ChromeOptions()
     options.add_argument("--disable-popup-blocking")
     #options.add_argument("--no-sandbox")
-    driver = uc.Chrome(version_main=95, options = options)
+    driver = uc.Chrome(options = options)
 
     driver.get("https://zodgame.xyz/")
 
