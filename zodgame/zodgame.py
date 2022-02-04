@@ -1,16 +1,31 @@
+# encoding=utf8
 import io
 import re
 import sys
 import time
+import subprocess
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8')
 
 import undetected_chromedriver as uc
+
+def getDriverVersion():
+   cmd = r'''powershell -command "&{(Get-Item 'C:\Program Files\Google\Chrome\Application\chrome.exe').VersionInfo.ProductVersion}"'''
+   print(cmd)
+   try:
+       out, err = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
+       out = out.decode('utf-8').split(".")[0]
+       return out
+   except IndexError as e:
+       print('Check chrome version failed:{}'.format(e))
+       return 0
 
 def zodgame(cookie_string):
     options = uc.ChromeOptions()
     options.add_argument("--disable-popup-blocking")
     #options.add_argument("--no-sandbox")
-    driver = uc.Chrome(options = options)
+    
+    version = getDriverVersion()
+    driver = uc.Chrome(version_main=version, options = options)
 
     driver.get("https://zodgame.xyz/")
 
@@ -38,7 +53,7 @@ def zodgame(cookie_string):
     while driver.title == "Just a moment...":
         time.sleep(5)
         timesleep = timesleep + 5
-        assert timesleep <= 240, "Time out."
+        assert timesleep <= 240, "签到超时"
 
     formhash = driver.find_element(uc.selenium.webdriver.common.by.By.XPATH, '//input[@name="formhash"]').get_attribute('value')
     checkin_url = "https://zodgame.xyz/plugin.php?id=dsu_paulsign:sign&operation=qiandao&infloat=1&inajax=0"    
@@ -66,7 +81,7 @@ def zodgame(cookie_string):
     
 if __name__ == "__main__":
     cookie_string = sys.argv[1]
-    
+    getDriverVersion()
     if cookie_string:
         zodgame(cookie_string)
     else:
