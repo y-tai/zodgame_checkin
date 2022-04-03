@@ -20,6 +20,7 @@ def get_driver_version():
        print('Check chrome version failed:{}'.format(e))
        return 0
 
+
 def zodgame_checkin(driver, formhash):
     checkin_url = "https://zodgame.xyz/plugin.php?id=dsu_paulsign:sign&operation=qiandao&infloat=1&inajax=0"    
     checkin_query = """
@@ -42,8 +43,16 @@ def zodgame_checkin(driver, formhash):
     print(f"【签到】{message}")
     return "恭喜你签到成功!" in message or "您今日已经签到，请明天再来" in message
 
-
 def zodgame_task(driver, formhash):
+
+    def clear_handles(driver, main_handle):
+        handles = driver.window_handles[:]
+        for handle in handles:
+            if handle != main_handle:
+                driver.switch_to.window(handle)
+                driver.close()
+        driver.switch_to.window(main_handle)
+
     driver.get("https://zodgame.xyz/plugin.php?id=jnbux")
     WebDriverWait(driver, 240, 5).until(
         lambda x: x.title != "Just a moment..."
@@ -63,34 +72,46 @@ def zodgame_task(driver, formhash):
     if len(join_task_a) == 0:
         print("【任务】所有任务均已完成。")
         return success
-
+   
+    handle = driver.current_window_handle
     for idx, a in enumerate(join_task_a):
         on_click = a.get_attribute("onclick")
         try:
-            function = re.search("openNewWindow(.*)\(\);", on_click, re.S)[0]
-            resp = driver.execute_script(function)
+            function = re.search("""openNewWindow(.*?)\(\)""", on_click, re.S)[0]
+            script = driver.find_element(By.XPATH, f'//script[contains(text(), "{function}")]').get_attribute("text")
+            task_url = re.search("""window.open\("(.*)", "newwindow"\)""", script, re.S)[1]
+            driver.tab_new(f"https://zodgame.xyz/{task_url}")
             driver.switch_to.window(driver.window_handles[-1])
-            WebDriverWait(driver, 240, 5).until(
-                lambda x: x.find_elements(By.XPATH, '//div[text()="成功！"]')
-            )
-            check_url = re.search('plugin.php(.*)page=0', on_click, re.S)[0]
-            driver.get(f"https://zodgame.xyz/{check_url}")
-            WebDriverWait(driver, 240, 5).until(
-                lambda x: x.find_elements(By.XPATH, '//p[text()="检查成功, 积分已经加入您的帐户中"]')
-            )
-            driver.close()
-            driver.switch_to.window(driver.window_handles[0])
+            try:
+                WebDriverWait(driver, 480, 5).until(
+                    lambda x: x.find_elements(By.XPATH, '//div[text()="成功！"]')
+                )
+            except:
+                print(f"【Log】任务 {idx+1} 广告页检查失败。")
+                pass
+
+            try:     
+                check_url = re.search("""showWindow\('check', '(.*)'\);""", on_click, re.S)[1]
+                driver.get(f"https://zodgame.xyz/{check_url}")
+                WebDriverWait(driver, 480, 5).until(
+                    lambda x: x.find_elements(By.XPATH, '//p[text()="检查成功, 积分已经加入您的帐户中"]')
+                )
+            except:
+                print(f"【Log】任务 {idx+1} 确认页检查失败。")
+                pass
+
             print(f"【任务】任务 {idx+1} 成功。")
-        except:
-            print(f"【任务】任务 {idx+1} 失败。")
+        except Exception as e:
             success = False
-            continue
+            print(f"【任务】任务 {idx+1} 失败。", type(e))
+        finally:
+            clear_handles(driver, handle)
+
     return success
 
 def zodgame(cookie_string):
     options = uc.ChromeOptions()
     options.add_argument("--disable-popup-blocking")
-    #options.add_argument("--no-sandbox")
       
     version = get_driver_version()
     driver = uc.Chrome(version_main=version, options = options)
