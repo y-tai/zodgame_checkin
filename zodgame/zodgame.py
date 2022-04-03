@@ -93,8 +93,8 @@ def zodgame_task(driver, formhash):
             try:     
                 check_url = re.search("""showWindow\('check', '(.*)'\);""", on_click, re.S)[1]
                 driver.get(f"https://zodgame.xyz/{check_url}")
-                WebDriverWait(driver, 480, 5).until(
-                    lambda x: x.find_elements(By.XPATH, '//p[text()="检查成功, 积分已经加入您的帐户中"]')
+                WebDriverWait(driver, 240, 1).until(
+                    lambda x: x.find_elements(By.XPATH, '//p[contains(text(), "检查成功, 积分已经加入您的帐户中")]')
                 )
             except:
                 print(f"【Log】任务 {idx+1} 确认页检查失败。")
