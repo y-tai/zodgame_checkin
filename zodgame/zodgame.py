@@ -45,26 +45,48 @@ def zodgame_checkin(driver, formhash):
 
 def zodgame_task(driver, formhash):
 
-    def clear_handles(driver, main_handle):
-        handles = driver.window_handles[:]
-        for handle in handles:
-            if handle != main_handle:
-                driver.switch_to.window(handle)
-                driver.close()
-        driver.switch_to.window(main_handle)
+    def show_task_reward(driver):
+        driver.get("https://zodgame.xyz/plugin.php?id=jnbux")
+        try:
+            WebDriverWait(driver, 240).until(
+                lambda x: x.title != "Just a moment..."
+            )
+            reward = driver.find_element(By.XPATH, '//li[contains(text(), "点币: ")]').get_attribute("textContent")[:-2]
+            print(f"【Log】{reward}")
+        except:
+            pass
 
+    def check_task_url(tasks):
+        def wrapper(driver):
+            vote = 0
+            handles = driver.window_handles
+            for task in tasks:
+                if task["check_flag"] is True:
+                    vote = vote + 1
+                    continue
+                if task["handle"] in handles:
+                    driver.switch_to.window(task["handle"])
+                    if len(driver.find_elements(By.XPATH, '//div[text()="成功！"]')) != 0:
+                        driver.get(task["check_url"])
+                        task["adv_flag"] = True
+                    if task["adv_flag"] is True and len(driver.find_elements(By.XPATH, '//p[contains(text(), "检查成功, 积分已经加入您的帐户中")]'))!=0:
+                        task["check_flag"] = True
+            return vote == len(tasks)
+        return wrapper
+        
     driver.get("https://zodgame.xyz/plugin.php?id=jnbux")
-    WebDriverWait(driver, 240, 5).until(
+    WebDriverWait(driver, 240).until(
         lambda x: x.title != "Just a moment..."
     )
 
     join_bux = driver.find_elements(By.XPATH, '//font[text()="开始参与任务"]')
     if len(join_bux) != 0 :    
         driver.get(f"https://zodgame.xyz/plugin.php?id=jnbux:jnbux&do=join&formhash={formhash}")
-        WebDriverWait(driver, 240, 5).until(
+        WebDriverWait(driver, 240).until(
             lambda x: x.title != "Just a moment..."
         )
         zodgame_task(driver, formhash)
+        return
 
     join_task_a = driver.find_elements(By.XPATH, '//a[text()="参与任务"]')
     success = True
@@ -72,40 +94,47 @@ def zodgame_task(driver, formhash):
     if len(join_task_a) == 0:
         print("【任务】所有任务均已完成。")
         return success
-   
-    handle = driver.current_window_handle
+    tasks = list()
     for idx, a in enumerate(join_task_a):
         on_click = a.get_attribute("onclick")
         try:
             function = re.search("""openNewWindow(.*?)\(\)""", on_click, re.S)[0]
             script = driver.find_element(By.XPATH, f'//script[contains(text(), "{function}")]').get_attribute("text")
             task_url = re.search("""window.open\("(.*)", "newwindow"\)""", script, re.S)[1]
-            driver.tab_new(f"https://zodgame.xyz/{task_url}")
-            driver.switch_to.window(driver.window_handles[-1])
-            try:
-                WebDriverWait(driver, 480, 5).until(
-                    lambda x: x.find_elements(By.XPATH, '//div[text()="成功！"]')
-                )
-            except:
-                print(f"【Log】任务 {idx+1} 广告页检查失败。")
-                pass
+            check_url = re.search("""showWindow\('check', '(.*)'\);""", on_click, re.S)[1]
+            task_url = "https://zodgame.xyz/" + task_url
+            check_url = "https://zodgame.xyz/" + check_url
+            driver.tab_new(task_url)
+            tasks.append({
+                "id": idx + 1,
+                "task_url": task_url,
+                "check_url": check_url,
+                "handle": driver.window_handles[-1],
+                "adv_flag": False,
+                "check_flag": False,
+            })
+        except:
+            print(f"【Log】任务{idx + 1}获取url失败。")
 
-            try:     
-                check_url = re.search("""showWindow\('check', '(.*)'\);""", on_click, re.S)[1]
-                driver.get(f"https://zodgame.xyz/{check_url}")
-                WebDriverWait(driver, 240, 1).until(
-                    lambda x: x.find_elements(By.XPATH, '//p[contains(text(), "检查成功, 积分已经加入您的帐户中")]')
-                )
-            except:
-                print(f"【Log】任务 {idx+1} 确认页检查失败。")
-                pass
+    if len(tasks) == 0:
+        print("【Log】获取广告页失败。")
+        return False
 
-            print(f"【任务】任务 {idx+1} 成功。")
-        except Exception as e:
-            success = False
-            print(f"【任务】任务 {idx+1} 失败。", type(e))
-        finally:
-            clear_handles(driver, handle)
+    try:
+        WebDriverWait(driver, 240).until(check_task_url(tasks))
+    except:
+        pass
+      
+    for task in tasks:
+        idx = task["id"]
+        if task["adv_flag"] is False:
+            print(f"【Log】任务 {idx} 广告页检查失败。")
+        elif task["check_flag"] is False:
+            print(f"【Log】任务 {idx} 确认页检查失败。")
+        else:
+            print(f"【Log】任务 {idx} 成功。")
+
+    show_task_reward(driver)
 
     return success
 
