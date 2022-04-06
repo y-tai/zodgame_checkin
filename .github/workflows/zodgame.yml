@@ -15,10 +15,6 @@ jobs:
     runs-on: windows-2019
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.7'
     - name: Install requirements
       run: |
         pip3 install -r ./zodgame/requirements.txt
