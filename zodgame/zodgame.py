@@ -94,6 +94,7 @@ def zodgame_task(driver, formhash):
     if len(join_task_a) == 0:
         print("【任务】所有任务均已完成。")
         return success
+   
     tasks = list()
     for idx, a in enumerate(join_task_a):
         on_click = a.get_attribute("onclick")
@@ -167,7 +168,7 @@ def zodgame(cookie_string):
     driver.get("https://zodgame.xyz/")
     
     try:
-        WebDriverWait(driver, 240, 5).until(
+        WebDriverWait(driver, 240).until(
             lambda x: x.title != "Just a moment..."
         )
         formhash = driver.find_element(By.XPATH, '//input[@name="formhash"]').get_attribute('value')
