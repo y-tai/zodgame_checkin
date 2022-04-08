@@ -69,11 +69,13 @@ def zodgame_task(driver, formhash):
                     if len(driver.find_elements(By.XPATH, '//div[text()="成功！"]')) != 0:
                         driver.get(task["check_url"])
                         task["adv_flag"] = True
-                    if task["adv_flag"] is True and len(driver.find_elements(By.XPATH, '//p[contains(text(), "检查成功, 积分已经加入您的帐户中")]'))!=0:
+                    if task["adv_flag"] is True \
+                        and (len(driver.find_elements(By.XPATH, '//p[contains(text(), "检查成功, 积分已经加入您的帐户中")]')) != 0
+                            or "https://zodgame.xyz/plugin.php?id=jnbux" in driver.current_url):
                         task["check_flag"] = True
             return vote == len(tasks)
-        return wrapper
-        
+        return wrapper  
+   
     driver.get("https://zodgame.xyz/plugin.php?id=jnbux")
     WebDriverWait(driver, 240).until(
         lambda x: x.title != "Just a moment..."
@@ -116,7 +118,7 @@ def zodgame_task(driver, formhash):
             })
         except:
             print(f"【Log】任务{idx + 1}获取url失败。")
-
+     
     if len(tasks) == 0:
         print("【Log】获取广告页失败。")
         return False
@@ -125,7 +127,7 @@ def zodgame_task(driver, formhash):
         WebDriverWait(driver, 240).until(check_task_url(tasks))
     except:
         pass
-      
+
     for task in tasks:
         idx = task["id"]
         if task["adv_flag"] is False:
