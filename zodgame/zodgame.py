@@ -65,14 +65,14 @@ def zodgame_task(driver, formhash):
             pass
 
     driver.get("https://zodgame.xyz/plugin.php?id=jnbux")
-    WebDriverWait(driver, 240, 5).until(
+    WebDriverWait(driver, 240).until(
         lambda x: x.title != "Just a moment..."
     )
 
     join_bux = driver.find_elements(By.XPATH, '//font[text()="开始参与任务"]')
     if len(join_bux) != 0 :    
         driver.get(f"https://zodgame.xyz/plugin.php?id=jnbux:jnbux&do=join&formhash={formhash}")
-        WebDriverWait(driver, 240, 5).until(
+        WebDriverWait(driver, 240).until(
             lambda x: x.title != "Just a moment..."
         )
         zodgame_task(driver, formhash)
