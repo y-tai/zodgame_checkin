@@ -105,7 +105,7 @@ def zodgame_task(driver, formhash):
                 check_url = re.search("""showWindow\('check', '(.*)'\);""", on_click, re.S)[1]
                 driver.get(f"https://zodgame.xyz/{check_url}")
                 WebDriverWait(driver, 240).until(
-                    lambda x: len(x.find_elements(By.XPATH, '//p[contains(text(), "检查成功, 积分已经加入您的帐户中")]')) != 0 or "https://zodgame.xyz/plugin.php?id=jnbux" in x.current_url):
+                    lambda x: len(x.find_elements(By.XPATH, '//p[contains(text(), "检查成功, 积分已经加入您的帐户中")]')) != 0 or x.title == "BUX广告点击赚积分 - ZodGame论坛 - Powered by Discuz!":
                 )
             except:
                 print(f"【Log】任务 {idx+1} 确认页检查失败。")
