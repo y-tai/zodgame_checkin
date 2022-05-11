@@ -75,7 +75,10 @@ def zodgame_task(driver, formhash):
         WebDriverWait(driver, 240).until(
             lambda x: x.title != "Just a moment..."
         )
-        zodgame_task(driver, formhash)
+        driver.get("https://zodgame.xyz/plugin.php?id=jnbux")
+        WebDriverWait(driver, 240).until(
+            lambda x: x.title != "Just a moment..."
+        )
 
     join_task_a = driver.find_elements(By.XPATH, '//a[text()="参与任务"]')
     success = True
@@ -133,6 +136,8 @@ def zodgame(cookie_string):
     # Load cookie
     driver.get("https://zodgame.xyz/")
 
+    if cookie_string.startswith("cookie:"):
+        cookie_string = cookie_string[len("cookie:"):]
     cookie_string = cookie_string.replace("/","%2")
     cookie_dict = [ 
         {"name" : x.split('=')[0].strip(), "value": x.split('=')[1].strip()} 
@@ -151,14 +156,12 @@ def zodgame(cookie_string):
     
     driver.get("https://zodgame.xyz/")
     
-    try:
-        WebDriverWait(driver, 240).until(
-            lambda x: x.title != "Just a moment..."
-        )
-        formhash = driver.find_element(By.XPATH, '//input[@name="formhash"]').get_attribute('value')
-    except:
-        assert False, "Login fails. Please check your cookie."
-    
+    WebDriverWait(driver, 240).until(
+        lambda x: x.title != "Just a moment..."
+    )
+    assert len(driver.find_elements(By.XPATH, '//a[text()="用户名"]')) == 0, "Login fails. Please check your cookie."
+        
+    formhash = driver.find_element(By.XPATH, '//input[@name="formhash"]').get_attribute('value')
     assert zodgame_checkin(driver, formhash) and zodgame_task(driver, formhash), "Checkin failed or task failed."
 
     driver.close()
