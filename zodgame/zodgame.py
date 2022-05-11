@@ -75,7 +75,10 @@ def zodgame_task(driver, formhash):
         WebDriverWait(driver, 240).until(
             lambda x: x.title != "Just a moment..."
         )
-        zodgame_task(driver, formhash)
+        driver.get("https://zodgame.xyz/plugin.php?id=jnbux")
+        WebDriverWait(driver, 240).until(
+            lambda x: x.title != "Just a moment..."
+        )
 
     join_task_a = driver.find_elements(By.XPATH, '//a[text()="参与任务"]')
     success = True
@@ -133,6 +136,8 @@ def zodgame(cookie_string):
     # Load cookie
     driver.get("https://zodgame.xyz/")
 
+    if cookie_string.startswith("cookie:"):
+        cookie_string = cookie_string[len("cookie:"):]
     cookie_string = cookie_string.replace("/","%2")
     cookie_dict = [ 
         {"name" : x.split('=')[0].strip(), "value": x.split('=')[1].strip()} 
