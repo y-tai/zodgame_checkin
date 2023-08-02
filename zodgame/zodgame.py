@@ -9,6 +9,7 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8')
 import undetected_chromedriver as uc
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
+import requests
 
 def get_driver_version():
     system = platform.system()
@@ -31,6 +32,9 @@ def get_driver_version():
 
     return out
 
+def get_latest_driver_version():
+    r = requests.get("https://chromedriver.storage.googleapis.com/LATEST_RELEASE")
+    return r.text.split(".")[0]
 
 def zodgame_checkin(driver, formhash):
     checkin_url = "https://zodgame.xyz/plugin.php?id=dsu_paulsign:sign&operation=qiandao&infloat=1&inajax=0"    
@@ -140,8 +144,8 @@ def zodgame(cookie_string):
     options = uc.ChromeOptions()
     options.add_argument("--disable-popup-blocking")
       
-    version = get_driver_version()
-    driver = uc.Chrome(version_main=version, options = options)
+    version = get_latest_driver_version()
+    driver = uc.Chrome(version_main = version, options = options)
 
     # Load cookie
     driver.get("https://zodgame.xyz/")
