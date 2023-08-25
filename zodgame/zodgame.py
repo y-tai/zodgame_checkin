@@ -11,31 +11,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 import requests
 
-def get_driver_version():
-    system = platform.system()
-
-    if system == "Darwin":
-        cmd = r'''/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --version'''
-    elif system == "Windows":
-        cmd = r'''powershell -command "&{(Get-Item 'C:\Program Files\Google\Chrome\Application\chrome.exe').VersionInfo.ProductVersion}"'''
-
-    try:
-        out, err = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
-    except IndexError as e:
-        print('Check chrome version failed:{}'.format(e))
-        return 0
-   
-    if system == "Darwin":
-        out = out.decode("utf-8").split(" ")[2].split(".")[0]
-    elif system == "Windows":
-        out = out.decode("utf-8").split(".")[0]
-
-    return out
-
-def get_latest_driver_version():
-    r = requests.get("https://chromedriver.storage.googleapis.com/LATEST_RELEASE")
-    return r.text.split(".")[0]
-
 def zodgame_checkin(driver, formhash):
     checkin_url = "https://zodgame.xyz/plugin.php?id=dsu_paulsign:sign&operation=qiandao&infloat=1&inajax=0"    
     checkin_query = """
@@ -143,9 +118,10 @@ def zodgame_task(driver, formhash):
 def zodgame(cookie_string):
     options = uc.ChromeOptions()
     options.add_argument("--disable-popup-blocking")
-      
-    version = get_driver_version()
-    driver = uc.Chrome(driver_executable_path = """C:\SeleniumWebDrivers\ChromeDriver\chromedriver.exe""", options = options)
+    
+    driver = uc.Chrome(driver_executable_path = """C:\SeleniumWebDrivers\ChromeDriver\chromedriver.exe""",
+                       browser_executable_path = """C:\Program Files\Google\Chrome\Application\chrome.exe""",
+                       options = options)
 
     # Load cookie
     driver.get("https://zodgame.xyz/")
