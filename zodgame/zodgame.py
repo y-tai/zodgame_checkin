@@ -88,7 +88,7 @@ async def zodgame(cookie_string):
 
     browser = await nodriver.start(
         headless=False,
-        no_sandbox=True
+        sandbox=False
     )
     tab = await browser.get('https://zodgame.xyz')
 
