@@ -1,1 +1,1 @@
-undetected-chromedriver
+nodriver
