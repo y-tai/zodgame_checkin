@@ -1,105 +1,75 @@
-# encoding=utf8
-import io
 import re
-import sys
-import platform
-import subprocess
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8')
+import nodriver
+from nodriver import cdp
 
-import undetected_chromedriver as uc
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.common.by import By
-import requests
+async def zodgame_checkin(tab, formhash):
 
-def zodgame_checkin(driver, formhash):
     checkin_url = "https://zodgame.xyz/plugin.php?id=dsu_paulsign:sign&operation=qiandao&infloat=1&inajax=0"    
+
     checkin_query = """
-        (function (){
-        var request = new XMLHttpRequest();
-        var fd = new FormData();
-        fd.append("formhash","%s");
-        fd.append("qdxq","kx");
-        request.open("POST","%s",false);
-        request.withCredentials=true;
-        request.send(fd);
-        return request;
+        (async function() {
+            const formdata = new FormData();
+            formdata.append("formhash","%s");
+            formdata.append("qdxq","kx");
+
+            const result = await fetch('%s', {
+                method: 'POST',
+                body: formdata
+            })
+            .then(response => {
+                return response.text();
+            })
+
+            return result;
         })();
         """ % (formhash, checkin_url)
-    checkin_query = checkin_query.replace("\n", "")
-    driver.set_script_timeout(240)
-    resp = driver.execute_script("return " + checkin_query)
-    match = re.search('<div class="c">\n(.*?)</div>\n', resp["response"], re.S)
+
+    resp = await tab.evaluate(checkin_query, await_promise=True, return_by_value=True)
+    match = re.search('<div class="c">\n(.*?)</div>\n', resp, re.S)
     message = match[1] if match is not None else "签到失败"
     print(f"【签到】{message}")
+
     return "恭喜你签到成功!" in message or "您今日已经签到，请明天再来" in message
 
-def zodgame_task(driver, formhash):
+async def zodgame_task(broswer):
 
-    def clear_handles(driver, main_handle):
-        handles = driver.window_handles[:]
-        for handle in handles:
-            if handle != main_handle:
-                driver.switch_to.window(handle)
-                driver.close()
-        driver.switch_to.window(main_handle)
-      
-    def show_task_reward(driver):
-        driver.get("https://zodgame.xyz/plugin.php?id=jnbux")
+    async def show_task_reward(broswer):
+        tab = await broswer.get("https://zodgame.xyz/plugin.php?id=jnbux", new_tab=True)
         try:
-            WebDriverWait(driver, 240).until(
-                lambda x: x.title != "Just a moment..."
-            )
-            reward = driver.find_element(By.XPATH, '//li[contains(text(), "点币: ")]').get_attribute("textContent")[:-2]
-            print(f"【Log】{reward}")
+            reward_li = (await tab.find('//li[contains(text(), "点币: ")]', timeout=60))
+            print(f"【Log】{reward_li.text}")
         except:
-            pass
+           pass
 
-    driver.get("https://zodgame.xyz/plugin.php?id=jnbux")
-    WebDriverWait(driver, 240).until(
-        lambda x: x.title != "Just a moment..."
-    )
+    jnbux_tab = await broswer.get("https://zodgame.xyz/plugin.php?id=jnbux")
+    
+    try:
+        join_task = await jnbux_tab.find_all('//a[text()="参与任务"]')
+    except:
+        join_task = []
+        success = True
 
-    join_bux = driver.find_elements(By.XPATH, '//font[text()="开始参与任务"]')
-    if len(join_bux) != 0 :    
-        driver.get(f"https://zodgame.xyz/plugin.php?id=jnbux:jnbux&do=join&formhash={formhash}")
-        WebDriverWait(driver, 240).until(
-            lambda x: x.title != "Just a moment..."
-        )
-        driver.get("https://zodgame.xyz/plugin.php?id=jnbux")
-        WebDriverWait(driver, 240).until(
-            lambda x: x.title != "Just a moment..."
-        )
-
-    join_task_a = driver.find_elements(By.XPATH, '//a[text()="参与任务"]')
-    success = True
-
-    if len(join_task_a) == 0:
+    if len(join_task) == 0:
         print("【任务】所有任务均已完成。")
-        return success
-    handle = driver.current_window_handle
-    for idx, a in enumerate(join_task_a):
-        on_click = a.get_attribute("onclick")
+        #return success
+
+    for idx, a in enumerate(join_task):
+        print(a.attrs)
+        on_click = a.attrs["onclick"]
+        print(on_click)
+        #await a.click()
         try:
-            function = re.search("""openNewWindow(.*?)\(\)""", on_click, re.S)[0]
-            script = driver.find_element(By.XPATH, f'//script[contains(text(), "{function}")]').get_attribute("text")
-            task_url = re.search("""window.open\("(.*)", "newwindow"\)""", script, re.S)[1]
-            driver.execute_script(f"""window.open("https://zodgame.xyz/{task_url}")""")
-            driver.switch_to.window(driver.window_handles[-1])
+            tab = broswer.tabs[-1]
             try:
-                WebDriverWait(driver, 240).until(
-                    lambda x: x.find_elements(By.XPATH, '//div[text()="成功！"]')
-                )
+                await tab.find('//div[text()="成功！"', timeout=240)
             except:
                 print(f"【Log】任务 {idx+1} 广告页检查失败。")
                 pass
 
             try:     
-                check_url = re.search("""showWindow\('check', '(.*)'\);""", on_click, re.S)[1]
-                driver.get(f"https://zodgame.xyz/{check_url}")
-                WebDriverWait(driver, 240).until(
-                    lambda x: len(x.find_elements(By.XPATH, '//p[contains(text(), "检查成功, 积分已经加入您的帐户中")]')) != 0 
-                        or x.title == "BUX广告点击赚积分 - ZodGame论坛 - Powered by Discuz!"
-                )
+                check_url = re.search("""showWindow('check', '(.*)');""", on_click, re.S)[1]
+                tab = await tab.get(f"https://zodgame.xyz/{check_url}")
+                await tab.find('//p[contains(text(), "检查成功, 积分已经加入您的帐户中")] | //title[text()="BUX广告点击赚积分 - ZodGame论坛 - Powered by Discuz!"]')
             except:
                 print(f"【Log】任务 {idx+1} 确认页检查失败。")
                 pass
@@ -108,57 +78,43 @@ def zodgame_task(driver, formhash):
         except Exception as e:
             success = False
             print(f"【任务】任务 {idx+1} 失败。", type(e))
-        finally:
-            clear_handles(driver, handle)
-    
-    show_task_reward(driver)
+
+    await show_task_reward(broswer)
 
     return success
 
-def zodgame(cookie_string):
-    options = uc.ChromeOptions()
-    options.add_argument("--disable-popup-blocking")
-    options.add_argument("--headless")
-    driver = uc.Chrome(driver_executable_path = """C:\SeleniumWebDrivers\ChromeDriver\chromedriver.exe""",
-                       browser_executable_path = """C:\Program Files\Google\Chrome\Application\chrome.exe""",
-                       options = options)
+async def zodgame(cookie_string):
 
-    # Load cookie
-    driver.get("https://zodgame.xyz/")
+    browser = await nodriver.start(
+        headless=False
+    )
+    tab = await browser.get('https://zodgame.xyz')
 
+    # Log in with cookie string
     if cookie_string.startswith("cookie:"):
         cookie_string = cookie_string[len("cookie:"):]
     cookie_string = cookie_string.replace("/","%2")
-    cookie_dict = [ 
-        {"name" : x.split('=')[0].strip(), "value": x.split('=')[1].strip()} 
+    cookie_dict = [
+        {"name": x.split('=')[0].strip(), "value": x.split('=')[1].strip()} 
         for x in cookie_string.split(';')
     ]
+    cookies = [
+        cdp.network.CookieParam(domain = 'zodgame.xyz', name = cookie["name"], value = cookie["value"], path = '/') 
+        for cookie in cookie_dict if cookie["name"] in ["qhMq_2132_saltkey", "qhMq_2132_auth"]
+    ]
+    #await browser.cookies.set_all(cookies)
+    await tab.send(cdp.storage.set_cookies(cookies))
+    await tab.reload()
 
-    driver.delete_all_cookies()
-    for cookie in cookie_dict:
-        if cookie["name"] in ["qhMq_2132_saltkey", "qhMq_2132_auth"]:
-            driver.add_cookie({
-                "domain": "zodgame.xyz",
-                "name": cookie["name"],
-                "value": cookie["value"],
-                "path": "/",
-            })
-    
-    driver.get("https://zodgame.xyz/")
-    
-    WebDriverWait(driver, 240).until(
-        lambda x: x.title != "Just a moment..."
-    )
-    assert len(driver.find_elements(By.XPATH, '//a[text()="用户名"]')) == 0, "Login fails. Please check your cookie."
-        
-    formhash = driver.find_element(By.XPATH, '//input[@name="formhash"]').get_attribute('value')
-    assert zodgame_checkin(driver, formhash) and zodgame_task(driver, formhash), "Checkin failed or task failed."
+    formhash = (await tab.find('//input[@name="formhash"]', timeout=180)).attrs["value"]
 
-    driver.close()
-    driver.quit()
-    
-if __name__ == "__main__":
+    #await zodgame_checkin(tab, formhash)
+    await zodgame_task(browser)
+
+    await tab.sleep(180)
+
+if __name__ == '__main__':
     cookie_string = sys.argv[1]
     assert cookie_string
     
-    zodgame(cookie_string)
+    nodriver.loop().run_until_complete(zodgame(cookie_string))
