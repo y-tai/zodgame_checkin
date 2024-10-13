@@ -2,6 +2,7 @@ import re
 import sys
 import nodriver
 from nodriver import cdp
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8')
 
 async def zodgame_checkin(tab, formhash):
 
@@ -116,7 +117,7 @@ async def zodgame(cookie_string):
     await tab.sleep(180)
 
 if __name__ == '__main__':
-    cookie_string = sys.argv[1]
+    cookie_string = .argv[1]
     assert cookie_string
     
     nodriver.loop().run_until_complete(zodgame(cookie_string))
