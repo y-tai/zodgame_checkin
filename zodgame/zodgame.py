@@ -2,6 +2,7 @@ import re
 import sys
 import nodriver
 from nodriver import cdp
+sys.stdout.reconfigure(encoding='utf-8')
 
 async def zodgame_checkin(tab, formhash):
 
@@ -28,7 +29,7 @@ async def zodgame_checkin(tab, formhash):
     resp = await tab.evaluate(checkin_query, await_promise=True, return_by_value=True)
     match = re.search('<div class="c">\n(.*?)</div>\n', resp, re.S)
     message = match[1] if match is not None else "签到失败"
-    #print(f"【签到】{message}")
+    print(f"【签到】{message}")
 
     return "恭喜你签到成功!" in message or "您今日已经签到，请明天再来" in message
 
@@ -112,7 +113,7 @@ async def zodgame(cookie_string):
 
     formhash = (await tab.find('//input[@name="formhash"]', timeout=180)).attrs["value"]
 
-    #await zodgame_checkin(tab, formhash)
+    await zodgame_checkin(tab, formhash)
     await zodgame_task(browser)
 
     await tab.sleep(180)
