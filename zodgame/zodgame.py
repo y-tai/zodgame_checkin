@@ -1,9 +1,8 @@
-import io
 import re
 import sys
 import nodriver
 from nodriver import cdp
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8')
+sys.stdout.reconfigure(encoding='utf-8')
 
 async def zodgame_checkin(tab, formhash):
 
