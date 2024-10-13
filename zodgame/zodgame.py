@@ -53,6 +53,7 @@ async def zodgame_task(broswer):
 
     if len(join_task) == 0:
         #print("【任务】所有任务均已完成。")
+        pass
         #return success
 
     for idx, a in enumerate(join_task):
