@@ -15,10 +15,17 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v3
+    - name: Create a new user
+      run: |
+          net user nonAdminUser password /add
+          net localgroup "Users" nonAdminUser /add
+      shell: cmd
     - name: Install requirements
       run: |
-        pip3 install -r ./zodgame/requirements.txt
-    - name: Run 
+        runas /user:nonAdminUser "pip3 install -r ./zodgame/requirements.txt"
+        shell: cmd
+    - name: Run
       run: |
-        python3 ./zodgame/zodgame.py "${{secrets.ZODGAME_COOKIE}}"
+        runas /user:nonAdminUser "python3 ./zodgame/zodgame.py ${{secrets.ZODGAME_COOKIE}}"
+        shell: cmd
     - uses: gautamkrishnar/keepalive-workflow@master
