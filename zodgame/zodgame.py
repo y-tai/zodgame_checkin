@@ -116,8 +116,6 @@ async def zodgame(cookie_string):
     await zodgame_checkin(tab, formhash)
     await zodgame_task(browser)
 
-    await tab.sleep(180)
-
 if __name__ == '__main__':
     cookie_string = sys.argv[1]
     assert cookie_string
