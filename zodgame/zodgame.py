@@ -4,9 +4,10 @@ import nodriver
 from nodriver import cdp
 sys.stdout.reconfigure(encoding='utf-8')
 
-async def zodgame_checkin(tab, formhash):
+async def zodgame_checkin(tab):
 
     checkin_url = "https://zodgame.xyz/plugin.php?id=dsu_paulsign:sign&operation=qiandao&infloat=1&inajax=0"    
+    formhash = (await tab.find('//input[@name="formhash"]', timeout=180)).attrs["value"]
 
     checkin_query = """
         (async function() {
@@ -52,9 +53,8 @@ async def zodgame_task(broswer):
         success = True
 
     if len(join_task) == 0:
-        #print("【任务】所有任务均已完成。")
+        print("【任务】所有任务均已完成。")
         #return success
-        pass
 
     for idx, a in enumerate(join_task):
         print(a.attrs)
@@ -66,7 +66,7 @@ async def zodgame_task(broswer):
             try:
                 await tab.find('//div[text()="成功！"', timeout=240)
             except:
-                #print(f"【Log】任务 {idx+1} 广告页检查失败。")
+                print(f"【Log】任务 {idx+1} 广告页检查失败。")
                 pass
 
             try:     
@@ -74,13 +74,13 @@ async def zodgame_task(broswer):
                 tab = await tab.get(f"https://zodgame.xyz/{check_url}")
                 await tab.find('//p[contains(text(), "检查成功, 积分已经加入您的帐户中")] | //title[text()="BUX广告点击赚积分 - ZodGame论坛 - Powered by Discuz!"]')
             except:
-                #print(f"【Log】任务 {idx+1} 确认页检查失败。")
+                print(f"【Log】任务 {idx+1} 确认页检查失败。")
                 pass
 
             print(f"【任务】任务 {idx+1} 成功。")
         except Exception as e:
             success = False
-            #print(f"【任务】任务 {idx+1} 失败。", type(e))
+            print(f"【任务】任务 {idx+1} 失败。", type(e))
 
     await show_task_reward(broswer)
 
@@ -111,11 +111,11 @@ async def zodgame(cookie_string):
     await tab.send(cdp.storage.set_cookies(cookies))
     await tab.reload()
 
-    formhash = (await tab.find('//input[@name="formhash"]', timeout=180)).attrs["value"]
-
-    await zodgame_checkin(tab, formhash)
-    await zodgame_task(browser)
-
+    task_manager = []
+    task_manager.append(await zodgame_checkin(tab))
+    task_manager.append(await zodgame_task(browser))
+    assert False in task_manager, "部分任务失败，请检查相关Log。"
+    
 if __name__ == '__main__':
     cookie_string = sys.argv[1]
     assert cookie_string
