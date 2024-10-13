@@ -1,8 +1,9 @@
+import io
 import re
 import sys
 import nodriver
 from nodriver import cdp
-#sys.stdout.reconfigure(encoding='utf-8')
+#sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8')
 
 async def zodgame_checkin(tab, formhash):
 
@@ -29,7 +30,7 @@ async def zodgame_checkin(tab, formhash):
     resp = await tab.evaluate(checkin_query, await_promise=True, return_by_value=True)
     match = re.search('<div class="c">\n(.*?)</div>\n', resp, re.S)
     message = match[1] if match is not None else "签到失败"
-    #print(f"【签到】{message}")
+    print(f"【签到】{message}")
 
     return "恭喜你签到成功!" in message or "您今日已经签到，请明天再来" in message
 
@@ -52,8 +53,7 @@ async def zodgame_task(broswer):
         success = True
 
     if len(join_task) == 0:
-        #print("【任务】所有任务均已完成。")
-        pass
+        print("【任务】所有任务均已完成。")
         #return success
 
     for idx, a in enumerate(join_task):
@@ -66,7 +66,7 @@ async def zodgame_task(broswer):
             try:
                 await tab.find('//div[text()="成功！"', timeout=240)
             except:
-                #print(f"【Log】任务 {idx+1} 广告页检查失败。")
+                print(f"【Log】任务 {idx+1} 广告页检查失败。")
                 pass
 
             try:     
@@ -74,13 +74,13 @@ async def zodgame_task(broswer):
                 tab = await tab.get(f"https://zodgame.xyz/{check_url}")
                 await tab.find('//p[contains(text(), "检查成功, 积分已经加入您的帐户中")] | //title[text()="BUX广告点击赚积分 - ZodGame论坛 - Powered by Discuz!"]')
             except:
-                #print(f"【Log】任务 {idx+1} 确认页检查失败。")
+                print(f"【Log】任务 {idx+1} 确认页检查失败。")
                 pass
 
-            #print(f"【任务】任务 {idx+1} 成功。")
+            print(f"【任务】任务 {idx+1} 成功。")
         except Exception as e:
             success = False
-            #print(f"【任务】任务 {idx+1} 失败。", type(e))
+            print(f"【任务】任务 {idx+1} 失败。", type(e))
 
     await show_task_reward(broswer)
 
