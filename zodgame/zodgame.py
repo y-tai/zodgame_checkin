@@ -2,14 +2,11 @@
 import io
 import re
 import sys
-import platform
-import subprocess
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8')
 
 import undetected_chromedriver as uc
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
-import requests
 
 def zodgame_checkin(driver, formhash):
     checkin_url = "https://zodgame.xyz/plugin.php?id=dsu_paulsign:sign&operation=qiandao&infloat=1&inajax=0"    
@@ -28,10 +25,11 @@ def zodgame_checkin(driver, formhash):
     checkin_query = checkin_query.replace("\n", "")
     driver.set_script_timeout(240)
     resp = driver.execute_script("return " + checkin_query)
-    match = re.search('<div class="c">\n(.*?)</div>\n', resp["response"], re.S)
+    match = re.search('<div class="c">\r\n(.*?)</div>\r\n', resp["response"], re.S)
     message = match[1] if match is not None else "签到失败"
     print(f"【签到】{message}")
     return "恭喜你签到成功!" in message or "您今日已经签到，请明天再来" in message
+
 
 def zodgame_task(driver, formhash):
 
@@ -118,7 +116,6 @@ def zodgame_task(driver, formhash):
 def zodgame(cookie_string):
     options = uc.ChromeOptions()
     options.add_argument("--disable-popup-blocking")
-    options.add_argument("--headless")
     driver = uc.Chrome(driver_executable_path = """C:\SeleniumWebDrivers\ChromeDriver\chromedriver.exe""",
                        browser_executable_path = """C:\Program Files\Google\Chrome\Application\chrome.exe""",
                        options = options)
