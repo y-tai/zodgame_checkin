@@ -20,6 +20,5 @@ jobs:
         pip3 install -r ./zodgame/requirements.txt
     - name: Run 
       run: |
-        Get-Process chrome | ForEach-Object { $_.Kill() }
         python3 ./zodgame/zodgame.py "${{secrets.ZODGAME_COOKIE}}"
     - uses: gautamkrishnar/keepalive-workflow@master
