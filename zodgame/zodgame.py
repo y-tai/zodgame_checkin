@@ -1,5 +1,6 @@
 import re
 import sys
+import asyncio
 import nodriver
 from nodriver import cdp
 sys.stdout.reconfigure(encoding='utf-8')
