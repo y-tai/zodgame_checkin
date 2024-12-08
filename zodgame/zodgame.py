@@ -121,4 +121,4 @@ if __name__ == '__main__':
     cookie_string = sys.argv[1]
     assert cookie_string
     
-    nodriver.loop().run_until_complete(zodgame(cookie_string))
+    asyncio.run(zodgame(cookie_string))
