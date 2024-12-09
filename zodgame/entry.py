@@ -4,10 +4,12 @@ import requests
 import json
 import sys
 import random
+import time
 from nodriver.core.config import find_chrome_executable
 
 def cmd_start_brower(chrome_path, port, user_data_dir):
-  chrome_path_temp = chrome_path.replace('\chrome.exe', '')
+  chrome_path_temp = chrome_path.replace(r'\chrome.exe', '')
+  print(chrome_path_temp)
   start_params = r'cd {} && chrome.exe --remote-debugging-port={} --user-data-dir={} --no-first-run --disable-infobars --allow-file-access-from-files --no-default-browser-check --profile-directory=Profile1'
   os.popen(start_params.format(chrome_path_temp, port, user_data_dir))
 
