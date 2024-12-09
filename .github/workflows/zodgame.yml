@@ -18,10 +18,14 @@ jobs:
     - uses: actions/setup-python@v5
       with:
         python-version: "3.13"
+    - name: Create non-root user
+      run: |
+        net user myuser MyPassword123! /add
+        net localgroup Users myuser /add
     - name: Install requirements
       run: |
-        pip3 install -r ./zodgame/requirements.txt
+        runas /user:myuser "pip3 install -r ./zodgame/requirements.txt"
     - name: Run 
       run: |
-        python3 ./zodgame/zodgame.py "${{secrets.ZODGAME_COOKIE}}"
+        runas /user:myuser "python3 ./zodgame/zodgame.py '${{secrets.ZODGAME_COOKIE}}'"
     - uses: gautamkrishnar/keepalive-workflow@master
