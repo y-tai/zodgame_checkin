@@ -92,7 +92,8 @@ async def zodgame(cookie_string):
     browser = await zd.start(
         headless = False,
         sandbox = False,
-        browser_executable_path = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
+        browser_executable_path = """C:\Program Files\Google\Chrome\Application\chrome.exe""",
+        browser_args = ["--no-sandbox"]
     )
     tab = await browser.get('https://zodgame.xyz')
 
