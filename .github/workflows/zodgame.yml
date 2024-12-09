@@ -23,5 +23,5 @@ jobs:
         pip3 install -r ./zodgame/requirements.txt
     - name: Run 
       run: |
-        python3 ./zodgame/entry.py "${{secrets.ZODGAME_COOKIE}}"
+        python3 ./zodgame/zodgame.py "${{secrets.ZODGAME_COOKIE}}"
     - uses: gautamkrishnar/keepalive-workflow@master
