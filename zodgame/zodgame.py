@@ -1,8 +1,8 @@
 import re
 import sys
 import asyncio
-import zendriver as zd
-from zendriver import cdp
+import nodriver
+from nodriver import cdp
 sys.stdout.reconfigure(encoding='utf-8')
 
 async def zodgame_checkin(tab):
@@ -89,7 +89,7 @@ async def zodgame_task(broswer):
 
 async def zodgame(cookie_string):
 
-    browser = await zd.start(
+    browser = await nodriver.start(
         headless = False,
         sandbox = False,
         browser_executable_path = """C:\Program Files\Google\Chrome\Application\chrome.exe""",
